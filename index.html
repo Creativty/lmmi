@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/16 23:03:34 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/16 23:16:33 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -26,7 +26,9 @@
 				const template = document.getElementById("tmpl_unlock");
 				const button = template.content.firstElementChild.cloneNode(true);
 				button.addEventListener("click", function (event) {
-					cookieStore.set(cookie_name_session, "a938f893d1").then(() => window.location = window.location);
+					const dialog = document.getElementById("dialog_unlock");
+					dialog.showModal();
+					// cookieStore.set(cookie_name_session, "a938f893d1").then(() => window.location = window.location);
 				});
 				return (button);
 			}
@@ -49,12 +51,12 @@
 		<h1>LEETMAKERS<small> / DASHBOARD</small></h1>
 		<span class="space-x"></span>
 	</header>
-	<dialog>
+	<dialog id="dialog_unlock">
 		<form method="POST" action="/api/session/obtain" class="contents">
 			<label for="password">Inventory Manager Secret:</label>
-			<input type="password" id="password" name="password" placeholder="Write the Inventory Manager Secret..." />
+			<input type="password" id="password" name="password" placeholder="Write the Inventory Manager Secret..." required />
 			<input type="hidden" id="__redirect" name="redirect" />
-			<button type="submit">Sign in</button>
+			<button type="submit" class="lock">Sign in</button>
 		</form>
 	</dialog>
 	<template id="tmpl_unlock">

@@ -29,3 +29,34 @@ button.lock {
 		background-color: var(--foreground);
 	}
 }
+
+input {
+	color: var(--foreground);
+	background: var(--background);
+}
+
+dialog#dialog_unlock[open] {
+	gap: 1rem;
+	padding: 2rem;
+	min-width: 33vw;
+	min-height: 33vh;
+	display: flex;
+	margin: auto;
+	flex-direction: column;
+	justify-content: center;
+	color: var(--foreground);
+	background: var(--background);
+	& button {
+		margin-top: 1rem;
+		align-self: flex-end;
+	}
+	& label {
+		font-size: 1.25rem;
+	}
+	& input#password {
+		all: unset;
+		font-size: 1.25rem;
+		padding: 0.5rem 1rem;
+		border-bottom: 4px solid var(--foreground);
+	}
+}
