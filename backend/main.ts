@@ -39,6 +39,20 @@ namespace Utils {
 		return new Response(text, { status, headers });
 	}
 
+	export function ResponseHTML(page: any, status = 200, _headers: Headers | undefined = undefined): Response {
+		const headers = new Headers();
+		for (const [key, value] of _headers?.entries() ?? [])
+			headers.set(key, value);
+		headers.set("Content-Type", "text/html");
+		return new Response(page, { status, headers });
+	}
+
+	export function ResponseCSS(page: any): Response {
+		const headers = new Headers();
+		headers.set("Content-Type", "text/css");
+		return new Response(page, { status, headers });
+	}
+
 	export function SearchParamsToFields(params: URLSearchParams, predicates: Record<string, (string, string) => boolean> = {}): AppSearchParams {
 		const entries = params.entries();
 		const result: AppSearchParams = { invalid: {}, data: {} };
@@ -121,12 +135,27 @@ namespace Users {
 	}
 }
 
+namespace Pages {
+	export async function Index(req: Request, meta: RequestMetadata): Promise<Response> {
+		const page = await Deno.readFile("../index.html");
+		return (Utils.ResponseHTML(page));
+	}
+	export async function Stylesheet(req: Request, meta: RequestMetadata): Promise<Response> {
+		const filename = `${meta.patterns["0"]}.css`
+		const stylesheet = await Deno.readFile("../index.html");
+		return (Utils.ResponseCSS(stylesheet));
+	}
+}
+
 namespace Data {
 	export const routes = [
 		{ pattern: new URLPattern({ pathname: "/users/" }), handler: Users.QueryMany, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/user", search: "*" }), handler: Users.QueryOne, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/user", search: "*" }), handler: Users.UpdateOne, method: "PUT" },
 		{ pattern: new URLPattern({ pathname: "/user/" }), handler: Users.InsertOne, method: "POST" },
+		// Files
+		{ pattern: new URLPattern({ pathname: "/" }), handler: Pages.Index, method: "GET" },
+		{ pattern: new URLPattern({ pathname: "/*.css" }), handler: Pages.Stylesheet, method: "GET" },
 	];
 	export const sqlite_file = "database.sqlite3";
 }
