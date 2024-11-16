@@ -50,7 +50,7 @@ namespace Utils {
 	export function ResponseCSS(page: any): Response {
 		const headers = new Headers();
 		headers.set("Content-Type", "text/css");
-		return new Response(page, { status, headers });
+		return new Response(page, { status: 200, headers });
 	}
 
 	export function SearchParamsToFields(params: URLSearchParams, predicates: Record<string, (string, string) => boolean> = {}): AppSearchParams {
@@ -135,6 +135,16 @@ namespace Users {
 	}
 }
 
+namespace Session {
+	export async function Obtain(req: Request, meta: RequestMetadata): Promise<Response> {
+		return (Utils.ResponseTODO());
+	}
+
+	export async function Drop(req: Request, meta: RequestMetadata): Promise<Response> {
+		return (Utils.ResponseTODO());
+	}
+}
+
 namespace Pages {
 	export async function Index(req: Request, meta: RequestMetadata): Promise<Response> {
 		const page = await Deno.readFile("../index.html");
@@ -142,13 +152,17 @@ namespace Pages {
 	}
 	export async function Stylesheet(req: Request, meta: RequestMetadata): Promise<Response> {
 		const filename = `${meta.patterns["0"]}.css`
-		const stylesheet = await Deno.readFile("../index.html");
+		const stylesheet = await Deno.readFile("../" + filename);
 		return (Utils.ResponseCSS(stylesheet));
 	}
 }
 
 namespace Data {
 	export const routes = [
+		// API
+		{ pattern: new URLPattern({ pathname: "/api/session/obtain" }), handler: Session.Obtain, method: "POST" },
+		{ pattern: new URLPattern({ pathname: "/api/session/drop" }), handler: Session.Drop, method: "POST" },
+		// Database
 		{ pattern: new URLPattern({ pathname: "/users/" }), handler: Users.QueryMany, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/user", search: "*" }), handler: Users.QueryOne, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/user", search: "*" }), handler: Users.UpdateOne, method: "PUT" },
@@ -170,7 +184,7 @@ function Server(): (_: Request) => Promise<Response> {
 		const match = pattern.exec(req.url);
 		const { groups: patterns } = match.pathname;
 		try {
-			console.log(`[DEBUG] endpoint ${req.url}`);
+			console.log(`[ENDPOINT] ${req.method} :: ${req.url}`);
 			const res = await handler(req, { db, patterns });
 			return (res);
 		} catch (error) {
