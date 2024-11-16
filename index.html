@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/16 23:16:33 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/16 23:27:54 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -20,6 +20,7 @@
 	<link rel="stylesheet" href="style.css" />
 	<script>
 		const cookie_name_session = "sessionId";
+
 		async function ElementLock(cookie) {
 			const cookie_session = await cookieStore.get(cookie_name_session);
 			function createUnlock() {
@@ -27,8 +28,9 @@
 				const button = template.content.firstElementChild.cloneNode(true);
 				button.addEventListener("click", function (event) {
 					const dialog = document.getElementById("dialog_unlock");
+					const input_redirect = dialog.querySelector("#__redirect");
+					input_redirect.value = String(window.location);
 					dialog.showModal();
-					// cookieStore.set(cookie_name_session, "a938f893d1").then(() => window.location = window.location);
 				});
 				return (button);
 			}
@@ -36,8 +38,7 @@
 				const template = document.getElementById("tmpl_lock");
 				const form = template.content.firstElementChild.cloneNode(true);
 				form.__cookie.value = cookie_session.value;
-				form.__redirect.value = window.location.toString();
-				console.log(form);
+				form.__redirect.value = String(window.location);
 				return (form);
 			}
 			if (!cookie_session)
