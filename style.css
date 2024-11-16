@@ -1,0 +1,31 @@
+:root {
+	--foreground: #212121;
+	--background: #EFEFEF;;
+
+	font-size: 18px;
+	font-family: 'Iosevka Nerd Font Mono', sans-serif;
+}
+
+body {
+	color: var(--foreground);
+	background-color: var(--background);
+}
+
+button.lock {
+	all: unset;
+
+	width: fit-content;
+	height: fit-content;
+	cursor: pointer;
+	padding: 0.5rem 3rem;
+	font-size: 1rem;
+	font-weight: 900;
+	color: var(--foreground);
+	border: 2px solid var(--foreground);
+	background-color: var(--background);
+	text-transform: uppercase;
+	&:hover {
+		color: var(--background);
+		background-color: var(--foreground);
+	}
+}

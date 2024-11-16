@@ -1,0 +1,75 @@
+<!-- *********************************************************************** -->
+<!--                                                                         -->
+<!--                                                      :::      ::::::::  -->
+<!-- index.html                                         :+:      :+:    :+:  -->
+<!--                                                  +:+ +:+         +:+    -->
+<!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
+<!--                                              +#+#+#+#+#+   +#+          -->
+<!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
+<!-- Updated: 2024/11/16 23:03:34 by abderrahim       ###   ########.fr      -->
+<!--                                                                         -->
+<!-- *********************************************************************** -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>LEETMAKERS</title>
+	<link rel="stylesheet" href="base.css" />
+	<link rel="stylesheet" href="layout.css" />
+	<link rel="stylesheet" href="style.css" />
+	<script>
+		const cookie_name_session = "sessionId";
+		async function ElementLock(cookie) {
+			const cookie_session = await cookieStore.get(cookie_name_session);
+			function createUnlock() {
+				const template = document.getElementById("tmpl_unlock");
+				const button = template.content.firstElementChild.cloneNode(true);
+				button.addEventListener("click", function (event) {
+					cookieStore.set(cookie_name_session, "a938f893d1").then(() => window.location = window.location);
+				});
+				return (button);
+			}
+			function createLock() {
+				const template = document.getElementById("tmpl_lock");
+				const form = template.content.firstElementChild.cloneNode(true);
+				form.__cookie.value = cookie_session.value;
+				form.__redirect.value = window.location.toString();
+				console.log(form);
+				return (form);
+			}
+			if (!cookie_session)
+				return (createUnlock());
+			return (createLock());
+		}
+	</script>
+</head>
+<body>
+	<header id="topbar">
+		<h1>LEETMAKERS<small> / DASHBOARD</small></h1>
+		<span class="space-x"></span>
+	</header>
+	<dialog>
+		<form method="POST" action="/api/session/obtain" class="contents">
+			<label for="password">Inventory Manager Secret:</label>
+			<input type="password" id="password" name="password" placeholder="Write the Inventory Manager Secret..." />
+			<input type="hidden" id="__redirect" name="redirect" />
+			<button type="submit">Sign in</button>
+		</form>
+	</dialog>
+	<template id="tmpl_unlock">
+		<button type="button" class="lock">Manage</button>
+	</template>
+	<template id="tmpl_lock">
+		<form method="POST" action="/api/session/drop" class="contents">
+			<input type="hidden" id="__cookie" name="session_id" />
+			<input type="hidden" id="__redirect" name="redirect" />
+			<button type="submit" class="lock">Sign out</button>
+		</form>
+	</template>
+	<script>
+		const slot = document.getElementById("topbar");
+		const frag = ElementLock(document.cookie).then((frag) => slot.insertAdjacentElement("beforeend", frag));
+	</script>
+</body>
+</html>

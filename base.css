@@ -1,0 +1,39 @@
+html {
+	box-sizing: border-box;
+}
+
+*, *::before, *::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+}
+
+body {
+	gap: 2rem;
+	padding: 8vh 10vw;
+	position: relative;
+	min-height: 100vh;
+}
+
+h1, h2, h3 {
+	font-weight: 900;
+}
+h4, h5, h6 {
+	font-weight: bold;
+}
+
+*.space-x {
+	margin: 0 auto;
+}
+
+*.space-y {
+	margin: auto 0;
+}
+
+*.space-flex {
+	flex: 1;
+}
+
+*.contents {
+	display: contents;
+}
