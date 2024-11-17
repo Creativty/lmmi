@@ -1,4 +1,5 @@
 import { Database } from 'jsr:@db/sqlite'
+import { setCookie } from 'jsr:@std/http/cookie'
 
 const PORT: number | string = 8080;
 
@@ -136,8 +137,20 @@ namespace Users {
 }
 
 namespace Session {
+	const MANAGER_SECRET = "1337";
+	const MANAGER_SESSION_ID = "a9ff8c";
 	export async function Obtain(req: Request, meta: RequestMetadata): Promise<Response> {
-		return (Utils.ResponseTODO());
+		const params = await req.formData();
+		const secret = params.get("secret");
+		if (secret !== MANAGER_SECRET)
+			return (Utils.ResponseError("The secret you provided is wrong...", 400));
+		const redirection = params.get("redirect");
+		if (redirection) {
+			const resp = new Response(null, { status: 304 });
+			resp.
+			return ();
+		}
+		return (new Response(`{ "ok": true }`, 200));
 	}
 
 	export async function Drop(req: Request, meta: RequestMetadata): Promise<Response> {
