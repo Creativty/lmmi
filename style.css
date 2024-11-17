@@ -53,7 +53,7 @@ dialog#dialog_unlock[open] {
 	& label {
 		font-size: 1.25rem;
 	}
-	& input#password {
+	& input#secret {
 		all: unset;
 		font-size: 1.25rem;
 		padding: 0.5rem 1rem;

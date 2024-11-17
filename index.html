@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/16 23:27:54 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/16 23:54:24 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -28,7 +28,7 @@
 				const button = template.content.firstElementChild.cloneNode(true);
 				button.addEventListener("click", function (event) {
 					const dialog = document.getElementById("dialog_unlock");
-					const input_redirect = dialog.querySelector("#__redirect");
+					const input_redirect = dialog.querySelector("#redirect");
 					input_redirect.value = String(window.location);
 					dialog.showModal();
 				});
@@ -37,8 +37,8 @@
 			function createLock() {
 				const template = document.getElementById("tmpl_lock");
 				const form = template.content.firstElementChild.cloneNode(true);
-				form.__cookie.value = cookie_session.value;
-				form.__redirect.value = String(window.location);
+				form.cookie.value = cookie_session.value;
+				form.redirect.value = String(window.location);
 				return (form);
 			}
 			if (!cookie_session)
@@ -54,9 +54,9 @@
 	</header>
 	<dialog id="dialog_unlock">
 		<form method="POST" action="/api/session/obtain" class="contents">
-			<label for="password">Inventory Manager Secret:</label>
-			<input type="password" id="password" name="password" placeholder="Write the Inventory Manager Secret..." required />
-			<input type="hidden" id="__redirect" name="redirect" />
+			<label for="secret">Secret:</label>
+			<input type="password" id="secret" name="secret" placeholder="Type in inventory manager secret..." required />
+			<input type="hidden" id="redirect" name="redirect" />
 			<button type="submit" class="lock">Sign in</button>
 		</form>
 	</dialog>
@@ -65,8 +65,8 @@
 	</template>
 	<template id="tmpl_lock">
 		<form method="POST" action="/api/session/drop" class="contents">
-			<input type="hidden" id="__cookie" name="session_id" />
-			<input type="hidden" id="__redirect" name="redirect" />
+			<input type="hidden" id="cookie" name="session_id" />
+			<input type="hidden" id="redirect" name="redirect" />
 			<button type="submit" class="lock">Sign out</button>
 		</form>
 	</template>
