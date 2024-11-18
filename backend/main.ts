@@ -54,7 +54,7 @@ namespace Utils {
 		return new Response(page, { status: 200, headers });
 	}
 
-	export function SearchParamsToFields(params: URLSearchParams, predicates: Record<string, (string, string) => boolean> = {}): AppSearchParams {
+	export function SearchParamsToFields(params: URLSearchParams, predicates: Record<string, (_: string, __: string) => boolean> = {}): AppSearchParams {
 		const entries = params.entries();
 		const result: AppSearchParams = { invalid: {}, data: {} };
 		for (const [key, value] of entries) {
@@ -105,7 +105,7 @@ namespace Users {
 		if (!Number.isInteger(id) || id <= 0)
 			return (Utils.ResponseError("parameter `id` has to be an integer larger than 0", 400));
 		const predicates = {
-			"username": (key, value) => /^[a-zA-Z_-]{4,32}$/.test(value),
+			"username": (key: string, value: string) => /^[a-zA-Z_-]{4,32}$/.test(value),
 		};
 		const app_params = Utils.SearchParamsToFields(url.searchParams, predicates);
 		if (Object.keys(app_params.invalid).length > 0)
@@ -144,13 +144,19 @@ namespace Session {
 		const secret = params.get("secret");
 		if (secret !== MANAGER_SECRET)
 			return (Utils.ResponseError("The secret you provided is wrong...", 400));
+		// Session ID
+		const cookie: Cookie = { name: "sid", value: MANAGER_SESSION_ID, path: "/" };
+
 		const redirection = params.get("redirect");
-		if (redirection) {
-			const resp = new Response(null, { status: 304 });
-			resp.
-			return ();
-		}
-		return (new Response(`{ "ok": true }`, 200));
+		const body = redirection ? null : `{ "ok": true }`;
+		const status = redirection ? 303 : 200;
+		const headers = new Headers({ "Access-Control-Allow-Credentials": true, "Access-Control-Allow-Origin": "*" });
+		setCookie(headers, cookie);
+		if (redirection)
+			headers.append("Location", redirection);
+		else
+			headers.append("Content-Type", "application/json");
+		return (new Response(body, { status, headers }));
 	}
 
 	export async function Drop(req: Request, meta: RequestMetadata): Promise<Response> {
@@ -195,7 +201,7 @@ function Server(): (_: Request) => Promise<Response> {
 			return (Utils.ResponseNotFound());
 		const { pattern, method, handler } = route;
 		const match = pattern.exec(req.url);
-		const { groups: patterns } = match.pathname;
+		const { groups: patterns } = match?.pathname ?? { groups: {} };
 		try {
 			console.log(`[ENDPOINT] ${req.method} :: ${req.url}`);
 			const res = await handler(req, { db, patterns });
