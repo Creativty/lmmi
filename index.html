@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/16 23:54:24 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/18 13:51:32 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -19,10 +19,40 @@
 	<link rel="stylesheet" href="layout.css" />
 	<link rel="stylesheet" href="style.css" />
 	<script>
-		const cookie_name_session = "sessionId";
+		function getCookie(name) {
+			let matches = document.cookie.match(new RegExp(
+				"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+			));
+			return (matches ? decodeURIComponent(matches[1]) : undefined);
+		}
 
-		async function ElementLock(cookie) {
-			const cookie_session = await cookieStore.get(cookie_name_session);
+		function setCookie(name, value, attributes = {}) {
+			attributes = {
+				path: '/',
+				// add other defaults here if necessary
+				...attributes
+			};
+			if (attributes.expires instanceof Date)
+				attributes.expires = attributes.expires.toUTCString();
+			let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+			for (let attributeKey in attributes) {
+				updatedCookie += "; " + attributeKey;
+				let attributeValue = attributes[attributeKey];
+				if (attributeValue !== true)
+					updatedCookie += "=" + attributeValue;
+			}
+			document.cookie = updatedCookie;
+		}
+
+		function deleteCookie(name) {
+			setCookie(name, "", { 'max-age': -1 });
+		}
+	</script>
+	<script>
+		const cookie_name_session = "sid";
+
+		function ElementLock(cookie) {
+			const cookie_session = getCookie(cookie_name_session);
 			function createUnlock() {
 				const template = document.getElementById("tmpl_unlock");
 				const button = template.content.firstElementChild.cloneNode(true);
@@ -37,7 +67,7 @@
 			function createLock() {
 				const template = document.getElementById("tmpl_lock");
 				const form = template.content.firstElementChild.cloneNode(true);
-				form.cookie.value = cookie_session.value;
+				form.cookie.value = cookie_session;
 				form.redirect.value = String(window.location);
 				return (form);
 			}
@@ -72,7 +102,8 @@
 	</template>
 	<script>
 		const slot = document.getElementById("topbar");
-		const frag = ElementLock(document.cookie).then((frag) => slot.insertAdjacentElement("beforeend", frag));
+		const frag = ElementLock();
+		slot.insertAdjacentElement("beforeend", frag);
 	</script>
 </body>
 </html>
