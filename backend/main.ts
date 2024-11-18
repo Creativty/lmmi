@@ -1,10 +1,13 @@
+import vento from "https://deno.land/x/vento@v0.9.1/mod.ts";
+import { type Environment } from "https://deno.land/x/vento@v0.9.1/src/environment.ts";
 import { Database } from 'jsr:@db/sqlite'
-import { setCookie } from 'jsr:@std/http/cookie'
+import { getCookies, setCookie, type Cookie } from 'jsr:@std/http/cookie'
 
 const PORT: number | string = 8080;
 
 interface RequestMetadata {
 	db: Database,
+	tmpl: Environment,
 	patterns: Record<string, string | undefined>,
 }
 
@@ -75,6 +78,12 @@ namespace Utils {
 	export function Timeout(ms: number): Promise<void> {
 		return new Promise<void>((resolve) => setTimeout(() => resolve(), ms));
 	}
+
+	export function StateFactory(req: Request, meta: RequestMetadata): Record<string, any> {
+		const cookies = getCookies(req.headers);
+		const is_logged_in = Session.Test(cookies["sid"]);
+		return { is_logged_in };
+	}
 }
 
 namespace Users {
@@ -139,6 +148,9 @@ namespace Users {
 namespace Session {
 	const MANAGER_SECRET = "1337";
 	const MANAGER_SESSION_ID = "a9ff8c";
+	export function Test(sessionString: string | null | undefined): boolean {
+		return (sessionString === MANAGER_SESSION_ID);
+	}
 	export async function Obtain(req: Request, meta: RequestMetadata): Promise<Response> {
 		const params = await req.formData();
 		const secret = params.get("secret");
@@ -150,29 +162,43 @@ namespace Session {
 		const redirection = params.get("redirect");
 		const body = redirection ? null : `{ "ok": true }`;
 		const status = redirection ? 303 : 200;
-		const headers = new Headers({ "Access-Control-Allow-Credentials": true, "Access-Control-Allow-Origin": "*" });
+		const headers = new Headers({ "Access-Control-Allow-Credentials": "true", "Access-Control-Allow-Origin": "*" });
 		setCookie(headers, cookie);
 		if (redirection)
-			headers.append("Location", redirection);
+			headers.append("Location", String(redirection));
 		else
 			headers.append("Content-Type", "application/json");
 		return (new Response(body, { status, headers }));
-	}
-
-	export async function Drop(req: Request, meta: RequestMetadata): Promise<Response> {
-		return (Utils.ResponseTODO());
 	}
 }
 
 namespace Pages {
 	export async function Index(req: Request, meta: RequestMetadata): Promise<Response> {
-		const page = await Deno.readFile("../index.html");
-		return (Utils.ResponseHTML(page));
+		const table = [
+			{ name: "Arduino UNO R3", quantity: { total: 3, reserved: 1 } },
+			{ name: "Arduino UNO", quantity: { total: 0, reserved: 0 } },
+			{ name: "LEGO Spike Set", quantity: { total: 1, reserved: 1 } },
+			{ name: "Light Sensor", quantity: { total: 9, reserved: 7 } },
+			{ name: "IR Sensor", quantity: { total: 2, reserved: 2 } },
+			{ name: "433MHz Receiver", quantity: { total: 4, reserved: 0 } },
+		].map((x, i) => ({ ...x, id: i + 1 }));
+
+		const state = Utils.StateFactory(req, meta);
+		const page_template = await meta.tmpl.load("../index.html");
+		const page = await page_template({ ...state, table });
+		return (Utils.ResponseHTML(page.content));
 	}
+
 	export async function Stylesheet(req: Request, meta: RequestMetadata): Promise<Response> {
 		const filename = `${meta.patterns["0"]}.css`
 		const stylesheet = await Deno.readFile("../" + filename);
 		return (Utils.ResponseCSS(stylesheet));
+	}
+
+	export async function Script(req: Request, meta: RequestMetadata): Promise<Response> {
+		const filename = `${meta.patterns["0"]}.js`
+		const script = await Deno.readFile("../" + filename);
+		return (Utils.ResponseCSS(script));
 	}
 }
 
@@ -180,7 +206,6 @@ namespace Data {
 	export const routes = [
 		// API
 		{ pattern: new URLPattern({ pathname: "/api/session/obtain" }), handler: Session.Obtain, method: "POST" },
-		{ pattern: new URLPattern({ pathname: "/api/session/drop" }), handler: Session.Drop, method: "POST" },
 		// Database
 		{ pattern: new URLPattern({ pathname: "/users/" }), handler: Users.QueryMany, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/user", search: "*" }), handler: Users.QueryOne, method: "GET" },
@@ -188,13 +213,15 @@ namespace Data {
 		{ pattern: new URLPattern({ pathname: "/user/" }), handler: Users.InsertOne, method: "POST" },
 		// Files
 		{ pattern: new URLPattern({ pathname: "/" }), handler: Pages.Index, method: "GET" },
+		{ pattern: new URLPattern({ pathname: "/*.js" }), handler: Pages.Script, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/*.css" }), handler: Pages.Stylesheet, method: "GET" },
 	];
 	export const sqlite_file = "database.sqlite3";
 }
 
-function Server(): (_: Request) => Promise<Response> {
+function Server(): ((_: Request) => Promise<Response>) {
 	const db = new Database(Data.sqlite_file);
+	const tmpl: Environment = vento();
 	async function HandleMatcher(req: Request): Promise<Response> {
 		const route = Data.routes.find((route) => route.method === req.method && route.pattern.test(req.url));
 		if (route === undefined)
@@ -204,7 +231,7 @@ function Server(): (_: Request) => Promise<Response> {
 		const { groups: patterns } = match?.pathname ?? { groups: {} };
 		try {
 			console.log(`[ENDPOINT] ${req.method} :: ${req.url}`);
-			const res = await handler(req, { db, patterns });
+			const res = await handler(req, { db, tmpl, patterns });
 			return (res);
 		} catch (error) {
 			return Utils.ResponseUncaught(error);

@@ -1,5 +1,4 @@
-:root {
-	--foreground: #212121;
+:root { --foreground: #212121;
 	--background: #EFEFEF;;
 
 	font-size: 18px;
@@ -35,7 +34,7 @@ input {
 	background: var(--background);
 }
 
-dialog#dialog_unlock[open] {
+dialog#dialog_session_obtain[open] {
 	gap: 1rem;
 	padding: 2rem;
 	min-width: 33vw;
@@ -58,5 +57,24 @@ dialog#dialog_unlock[open] {
 		font-size: 1.25rem;
 		padding: 0.5rem 1rem;
 		border-bottom: 4px solid var(--foreground);
+	}
+}
+
+table {
+	text-align: center;
+	border-collapse: collapse;
+	td, th {
+		padding: 1rem;
+		font-size: 1.2rem;
+	}
+	th {
+		border: none;
+		border-bottom: 4px solid var(--foreground);
+		text-transform: uppercase;
+		font-size: 1.2rem;
+	}
+	tbody tr.out_of_stock {
+		color: #797979;
+		background-color: #8f333318;
 	}
 }

@@ -6,104 +6,79 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/18 13:51:32 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/18 22:46:46 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>LEETMAKERS</title>
-	<link rel="stylesheet" href="base.css" />
-	<link rel="stylesheet" href="layout.css" />
-	<link rel="stylesheet" href="style.css" />
-	<script>
-		function getCookie(name) {
-			let matches = document.cookie.match(new RegExp(
-				"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-			));
-			return (matches ? decodeURIComponent(matches[1]) : undefined);
-		}
+	<head>
+		<meta charset="UTF-8">
+		<title>LEETMAKERS</title>
+		<link rel="stylesheet" href="css/base.css" />
+		<link rel="stylesheet" href="css/layout.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/cookie.js"></script>
+		<script>
+			var cookie_session_name = "sid";
 
-		function setCookie(name, value, attributes = {}) {
-			attributes = {
-				path: '/',
-				// add other defaults here if necessary
-				...attributes
-			};
-			if (attributes.expires instanceof Date)
-				attributes.expires = attributes.expires.toUTCString();
-			let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-			for (let attributeKey in attributes) {
-				updatedCookie += "; " + attributeKey;
-				let attributeValue = attributes[attributeKey];
-				if (attributeValue !== true)
-					updatedCookie += "=" + attributeValue;
+			function Signout() {
+				deleteCookie(cookie_session_name);
+				window.location.reload();
 			}
-			document.cookie = updatedCookie;
-		}
 
-		function deleteCookie(name) {
-			setCookie(name, "", { 'max-age': -1 });
-		}
-	</script>
-	<script>
-		const cookie_name_session = "sid";
-
-		function ElementLock(cookie) {
-			const cookie_session = getCookie(cookie_name_session);
-			function createUnlock() {
-				const template = document.getElementById("tmpl_unlock");
-				const button = template.content.firstElementChild.cloneNode(true);
-				button.addEventListener("click", function (event) {
-					const dialog = document.getElementById("dialog_unlock");
-					const input_redirect = dialog.querySelector("#redirect");
-					input_redirect.value = String(window.location);
-					dialog.showModal();
-				});
-				return (button);
+			function ShowSessionDialog() {
+				const dialog = document.getElementById("dialog_session_obtain");
+				dialog.showModal();
 			}
-			function createLock() {
-				const template = document.getElementById("tmpl_lock");
-				const form = template.content.firstElementChild.cloneNode(true);
-				form.cookie.value = cookie_session;
-				form.redirect.value = String(window.location);
-				return (form);
-			}
-			if (!cookie_session)
-				return (createUnlock());
-			return (createLock());
-		}
-	</script>
-</head>
-<body>
-	<header id="topbar">
-		<h1>LEETMAKERS<small> / DASHBOARD</small></h1>
-		<span class="space-x"></span>
-	</header>
-	<dialog id="dialog_unlock">
-		<form method="POST" action="/api/session/obtain" class="contents">
-			<label for="secret">Secret:</label>
-			<input type="password" id="secret" name="secret" placeholder="Type in inventory manager secret..." required />
-			<input type="hidden" id="redirect" name="redirect" />
-			<button type="submit" class="lock">Sign in</button>
-		</form>
-	</dialog>
-	<template id="tmpl_unlock">
-		<button type="button" class="lock">Manage</button>
-	</template>
-	<template id="tmpl_lock">
-		<form method="POST" action="/api/session/drop" class="contents">
-			<input type="hidden" id="cookie" name="session_id" />
-			<input type="hidden" id="redirect" name="redirect" />
-			<button type="submit" class="lock">Sign out</button>
-		</form>
-	</template>
-	<script>
-		const slot = document.getElementById("topbar");
-		const frag = ElementLock();
-		slot.insertAdjacentElement("beforeend", frag);
-	</script>
-</body>
+		</script>
+	</head>
+	<body>
+		<header id="topbar">
+			<h1>LEETMAKERS<small> / DASHBOARD</small></h1>
+			<span class="space-x"></span>
+			{{ if is_logged_in }}
+				<button id="session_control" type="button" class="lock" onclick="Signout()">Sign out</button>
+			{{ else }}
+				<button id="session_control" type="button" class="lock" onclick="ShowSessionDialog()">Sign in</button>
+			{{ /if }}
+		</header>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Total</th>
+					<th>Reserved</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{ for item of table }}
+				<tr class={{ item.quantity.total === item.quantity.reserved ? "out_of_stock" : "" }}>
+					<td>{{ item.id }}</td>
+					<td>{{ item.name }}</td>
+					<td>{{ item.quantity.total }}</td>
+					<td>{{ item.quantity.reserved }}</td>
+					<td></td>
+				</tr>
+				{{ /for }}
+			</tbody>
+		</table>
+		<dialog id="dialog_session_obtain">
+			<form method="POST" action="/api/session/obtain" class="contents">
+				<label for="secret">Secret:</label>
+				<input type="password" id="secret" name="secret" placeholder="Type in inventory manager secret..." required />
+				<input type="hidden" id="redirect_obtain" name="redirect" />
+				<button type="submit" class="lock">Submit</button>
+			</form>
+		</dialog>
+		<script>
+			// Fill all redirects with the current page value
+			const redirects = document.querySelectorAll("input[name=redirect]");
+			const iterator = Array.from(redirects);
+			for (const redirect of redirects)
+				redirect.value = window.location.toString();
+		</script>
+	</body>
 </html>
