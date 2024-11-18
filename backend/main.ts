@@ -226,6 +226,7 @@ function Server(): ((_: Request) => Promise<Response>) {
 		const route = Data.routes.find((route) => route.method === req.method && route.pattern.test(req.url));
 		if (route === undefined)
 			return (Utils.ResponseNotFound());
+		tmpl.cache.clear(); // TODO(XENOBAS): Remove me once deployed.
 		const { pattern, method, handler } = route;
 		const match = pattern.exec(req.url);
 		const { groups: patterns } = match?.pathname ?? { groups: {} };
