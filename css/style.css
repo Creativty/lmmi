@@ -61,7 +61,7 @@ dialog#dialog_session_obtain[open] {
 }
 
 table {
-	text-align: center;
+	text-align: left;
 	border-collapse: collapse;
 	td, th {
 		padding: 1rem;

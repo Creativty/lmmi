@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/18 22:46:46 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/18 23:42:45 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -18,6 +18,7 @@
 		<link rel="stylesheet" href="css/base.css" />
 		<link rel="stylesheet" href="css/layout.css" />
 		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/cart.js"></script>
 		<script src="js/cookie.js"></script>
 		<script>
 			var cookie_session_name = "sid";
@@ -50,21 +51,28 @@
 					<th>Name</th>
 					<th>Total</th>
 					<th>Reserved</th>
-					<th>Action</th>
+					<th style="width: 4rem;"></th>
 				</tr>
 			</thead>
 			<tbody>
 				{{ for item of table }}
-				<tr class={{ item.quantity.total === item.quantity.reserved ? "out_of_stock" : "" }}>
+				<tr data-item-id="{{ item.id }}" data-item-name="{{ item.name }}" data-item-total="{{ item.quantity.total }}" data-item-reserved="{{ item.quantity.reserved }}" class={{ item.quantity.total === item.quantity.reserved ? "out_of_stock" : "" }}>
 					<td>{{ item.id }}</td>
 					<td>{{ item.name }}</td>
 					<td>{{ item.quantity.total }}</td>
 					<td>{{ item.quantity.reserved }}</td>
-					<td></td>
+					<td>
+						<button type="button" onclick="CartPopup({{ item.id }})">Request</button>
+					</td>
 				</tr>
 				{{ /for }}
 			</tbody>
 		</table>
+		<section id="cart">
+		</section>
+		<dialog id="dialog_cart">
+			<h3>TEMPORARY</h3>
+		</dialog>
 		<dialog id="dialog_session_obtain">
 			<form method="POST" action="/api/session/obtain" class="contents">
 				<label for="secret">Secret:</label>

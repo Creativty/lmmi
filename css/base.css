@@ -2,7 +2,7 @@ html {
 	box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*:not(dialog), *:not(dialog)::before, *:not(dialog)::after {
 	margin: 0;
 	padding: 0;
 	box-sizing: inherit;

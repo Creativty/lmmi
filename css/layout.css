@@ -12,3 +12,19 @@ header {
 main {
 	flex: 1;
 }
+
+section#cart {
+	position: fixed;
+	left: 1rem;
+	bottom: 1rem;
+	min-width: 16rem;
+	min-height: 8rem;
+	color: var(--foreground);
+	outline: 2px solid var(--foreground);
+	background-color: var(--background);
+	opacity: 0.8;
+	visibility: hidden;
+	&.visible {
+		visibility: visible;
+	}
+}
