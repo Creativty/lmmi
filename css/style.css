@@ -131,7 +131,7 @@ table {
 		font-size: 1.2rem;
 	}
 	tbody tr.out_of_stock {
-		color: #797979;
-		background-color: #8f333318;
+		color: #999999;
+		background-color: #8f33330f;
 	}
 }
