@@ -9,3 +9,4 @@ LEETMAKERS (1337 Ben guerir's very own robotics club)'s inventory management int
 - Requests review interface
 - Search
 - Tags/Categories
+- Logs for each item describing its history of reservations.

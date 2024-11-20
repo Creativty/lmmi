@@ -68,11 +68,34 @@ input {
 	background: var(--background);
 }
 
+dialog#dialog_cart[open] {
+	gap: 1rem;
+	padding: 2rem;
+	min-width: 33vw;
+	color: var(--foreground);
+	background-color: var(--background);
+	margin: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	button.cart_action {
+		float: right;
+		&:not(:last-child) {
+			margin-left: 1rem;
+		}
+	}
+	input[type=number] {
+		all: unset;
+		font-size: 1.25rem;
+		padding: 0.5rem 1rem;
+		border-bottom: 4px solid var(--foreground);
+	}
+}
+
 dialog#dialog_session_obtain[open] {
 	gap: 1rem;
 	padding: 2rem;
 	min-width: 33vw;
-	min-height: 33vh;
 	display: flex;
 	margin: auto;
 	flex-direction: column;

@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/20 21:55:53 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/20 23:35:07 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -23,25 +23,30 @@
 		<script>
 			var cookie_session_name = "sid";
 
-			function Signout() {
+			function SessionSignout() {
 				deleteCookie(cookie_session_name);
 				window.location.reload();
 			}
 
-			function ShowSessionDialog() {
+			function DialogSessionOpen() {
 				const dialog = document.getElementById("dialog_session_obtain");
 				dialog.showModal();
+			}
+
+			function DialogCartClose() {
+				const dialog = document.getElementById("dialog_cart");
+				dialog.close();
 			}
 		</script>
 	</head>
 	<body>
 		<header id="topbar">
-			<h1>LEETMAKERS<small> / DASHBOARD</small></h1>
+			<h1>LEETMAKERS<small> / {{ is_logged_in ? 'DASHBOARD' : 'INVENTORY' }}</small></h1>
 			<span class="space-x"></span>
 			{{ if is_logged_in }}
-				<button id="session_control" type="button" class="lock" onclick="Signout()">Sign out</button>
+				<button id="session_control" type="button" class="lock" onclick="SessionSignout()">Sign out</button>
 			{{ else }}
-				<button id="session_control" type="button" class="lock" onclick="ShowSessionDialog()">Sign in</button>
+				<button id="session_control" type="button" class="lock" onclick="DialogSessionOpen()">Sign in</button>
 			{{ /if }}
 		</header>
 		<table>
@@ -67,7 +72,7 @@
 								<button type="button" class="action">Edit</button>
 							{{ /if }}
 							{{ if item.quantity.reserved < item.quantity.total }}
-								<button type="button" class="action" onclick="CartPopup({{ item.id }})">Request</button>
+								<button type="button" class="action" onclick="DialogCartOpen({{ item.id }}, {{ item.quantity.total }}, {{ item.quantity.reserved }})">Request</button>
 							{{ /if }}
 						</div>
 					</td>
@@ -78,13 +83,16 @@
 		<section id="cart">
 			<h3>Cart</h3>
 			<ul id="cart_items">
-				<li>1x Arduino Uno R3</li>
-				<li>8x Light Sensor</li>
 			</ul>
 			<button class="lock">Submit</button>
 		</section>
 		<dialog id="dialog_cart">
-			<h3>TEMPORARY</h3>
+			<h3><small>Requesting how many of</small> <u id="dialog_cart_item_title"></u>'s <small>?</small></h3>
+			<input  id="dialog_cart_item_amount" type="number" min="1" value="1">
+			<div class="cart_actions">
+				<button onclick="DialogCartSubmit()" class="lock cart_action">Submit</button>
+				<button onclick="DialogCartClose()" class="lock cart_action">Cancel</button>
+			</div>
 		</dialog>
 		<dialog id="dialog_session_obtain">
 			<form method="POST" action="/api/session/obtain" class="contents">
@@ -100,6 +108,27 @@
 			const iterator = Array.from(redirects);
 			for (const redirect of redirects)
 				redirect.value = window.location.toString();
+		</script>
+		<script>
+			// Inputs only can be inside the maximum.
+			const clamp = (min, x, max) => Math.min(max, Math.max(min, x));
+			const inputs = document.querySelectorAll("input[type=number]");
+			for (const input of inputs) {
+				input.addEventListener("change", (event) => {
+					const max = event.target.getAttribute("max");
+					const min = event.target.getAttribute("min");
+					const value = event.target.value;
+					if (value.length > 0) {
+						if (min && max) {
+							event.target.value = clamp(Number(min), Number(value), Number(max));
+						} else if (min) {
+							event.target.value = Math.max(Number(min), Number(value));
+						} else if (max) {
+							event.target.value = Math.min(Number(max), Number(value));
+						}
+					}
+				});
+			}
 		</script>
 	</body>
 </html>

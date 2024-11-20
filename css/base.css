@@ -15,6 +15,16 @@ body {
 	min-height: 100vh;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	margin: 0;
+	-webkit-appearance: none;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
 h1, h2, h3 {
 	font-weight: 900;
 }
