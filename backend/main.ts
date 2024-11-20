@@ -202,10 +202,33 @@ namespace Pages {
 	}
 }
 
+namespace Items {
+	export async function Details(req: Request, meta: RequestMetadata): Promise<Response> {
+		const table = [
+			{ name: "Arduino UNO R3", quantity: { total: 3, reserved: 1 } },
+			{ name: "Arduino UNO", quantity: { total: 0, reserved: 0 } },
+			{ name: "LEGO Spike Set", quantity: { total: 1, reserved: 1 } },
+			{ name: "Light Sensor", quantity: { total: 9, reserved: 7 } },
+			{ name: "IR Sensor", quantity: { total: 2, reserved: 2 } },
+			{ name: "433MHz Receiver", quantity: { total: 4, reserved: 0 } },
+		].map((x, i) => ({ ...x, id: i + 1 }));
+
+		const ids = await req.json();
+		const data = [];
+		for (const id of ids) {
+			const item = table.find(x => x.id === id);
+			if (item)
+				data.push(item);
+		}
+		return (Utils.ResponseJSON(data));
+	}
+}
+
 namespace Data {
 	export const routes = [
 		// API
 		{ pattern: new URLPattern({ pathname: "/api/session/obtain" }), handler: Session.Obtain, method: "POST" },
+		{ pattern: new URLPattern({ pathname: "/api/items/details" }), handler: Items.Details, method: "POST" },
 		// Database
 		{ pattern: new URLPattern({ pathname: "/users/" }), handler: Users.QueryMany, method: "GET" },
 		{ pattern: new URLPattern({ pathname: "/user", search: "*" }), handler: Users.QueryOne, method: "GET" },

@@ -1,11 +1,11 @@
 // BUG(XENOBAS): Adding items one-by-one overflows the available quantity.
 
-function CartAdd(id, amount, name = "<unknown>") {
+function CartAdd(id, amount) {
 	id = Number(id);
 	amount = Number(amount);
 	if (amount <= 0)
 		return alert("card_add: invalid amount");
-	const detail = { id, amount, name };
+	const detail = { id, amount };
 	const event = new CustomEvent("cart_add", { detail });
 
 	document.dispatchEvent(event);
@@ -28,9 +28,8 @@ function DialogCartSubmit() {
 
 	const data = dialog.dataset;
 	const id = data["itemId"];
-	const name = data["itemName"] ?? "<unknown>";
 	const amount = Number(input.value);
-	CartAdd(id, amount, name);
+	CartAdd(id, amount);
 	dialog.close();
 }
 
@@ -45,7 +44,6 @@ function DialogCartOpen(id, qt_total, qt_reserved) {
 
 	const name = row.getAttribute("data-item-name");
 	dialog.setAttribute("data-item-id", id);
-	dialog.setAttribute("data-item-name", name);
 	title.innerText = name;
 	input.value = "1";
 	input.setAttribute("max", amount_max);
@@ -61,12 +59,27 @@ function __cart_upload(cart) {
 	localStorage.setItem("cart", JSON.stringify(cart ?? []));
 }
 
-function __cart_display(cart = []) {
+async function __cart_fetch(cart = []) {
+	const ids = cart.map(({ id }) => id);
+	const res = await fetch('/api/items/details', {
+		method: "POST",
+		headers: new Headers({
+			"Content-Type": "application/json",
+		}),
+		body: JSON.stringify(ids),
+	});
+	const data = await res.json();
+	return (data);
+}
+
+async function __cart_display(cart = []) {
+	const data = await __cart_fetch(cart);
 	const display = document.getElementById("cart");
 	const list = display.querySelector("ul#cart_items");
 	const list_elements = [];
 	for (const item of cart) {
 		const li = document.createElement("li");
+		const name = data.find(x => Number(x.id) === Number(item.id))?.name ?? "<unknown>";
 		li.innerText = `${item.amount}x ${item.name}`;
 		list_elements.push(li);
 	}
