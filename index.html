@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/20 23:56:04 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/21 00:10:16 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -102,33 +102,7 @@
 				<button type="submit" class="lock">Submit</button>
 			</form>
 		</dialog>
-		<script>
-			// Fill all redirects with the current page value
-			const redirects = document.querySelectorAll("input[name=redirect]");
-			const iterator = Array.from(redirects);
-			for (const redirect of redirects)
-				redirect.value = window.location.toString();
-		</script>
-		<script>
-			// Inputs only can be inside the maximum.
-			const clamp = (min, x, max) => Math.min(max, Math.max(min, x));
-			const inputs = document.querySelectorAll("input[type=number]");
-			for (const input of inputs) {
-				input.addEventListener("change", (event) => {
-					const max = event.target.getAttribute("max");
-					const min = event.target.getAttribute("min");
-					const value = event.target.value;
-					if (value.length > 0) {
-						if (min && max) {
-							event.target.value = clamp(Number(min), Number(value), Number(max));
-						} else if (min) {
-							event.target.value = Math.max(Number(min), Number(value));
-						} else if (max) {
-							event.target.value = Math.min(Number(max), Number(value));
-						}
-					}
-				});
-			}
-		</script>
+		<script src="js/init/redirect.js"></script>
+		<script src="js/init/input_number.js"></script>
 	</body>
 </html>

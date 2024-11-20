@@ -1,5 +1,3 @@
-// BUG(XENOBAS): Adding items one-by-one overflows the available quantity.
-
 function CartAdd(id, amount) {
 	id = Number(id);
 	amount = Number(amount);
@@ -95,6 +93,7 @@ document.addEventListener("cart_add", function (event) {
 	const cart = __cart_load();
 	const { id, amount, name = "<unknown>" } = event.detail;
 	const index = cart.findIndex(x => x.id === id);
+	// TODO(XENOBAS): BUG(Adding items one-by-one overflows the available quantity.)
 	if (index === -1)
 		cart.push({ id, amount, name });
 	else
