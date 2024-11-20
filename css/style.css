@@ -29,7 +29,7 @@ button.lock {
 	}
 }
 
-button.request {
+button.action {
 	all: unset;
 	width: fit-content;
 	height: fit-content;

@@ -37,3 +37,7 @@ h4, h5, h6 {
 *.contents {
 	display: contents;
 }
+
+*.text-center {
+	text-align: center;
+}

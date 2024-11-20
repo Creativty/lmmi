@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/20 11:43:39 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/20 21:55:53 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -47,30 +47,41 @@
 		<table>
 			<thead>
 				<tr>
-					<th>ID</th>
+					<th class="text-center">ID</th>
 					<th>Name</th>
-					<th>Total</th>
-					<th>Reserved</th>
-					<th style="width: 4rem;"></th>
+					<th class="text-center">Total</th>
+					<th class="text-center">Reserved</th>
+					<th style="width: {{ is_logged_in ? '16ch' : '8ch' }};">Action</th>
 				</tr>
 			</thead>
 			<tbody>
 				{{ for item of table }}
 				<tr data-item-id="{{ item.id }}" data-item-name="{{ item.name }}" data-item-total="{{ item.quantity.total }}" data-item-reserved="{{ item.quantity.reserved }}" class={{ item.quantity.total === item.quantity.reserved ? "out_of_stock" : "" }}>
-					<td>{{ item.id }}</td>
+					<td class="text-center">{{ item.id }}</td>
 					<td>{{ item.name }}</td>
-					<td>{{ item.quantity.total }}</td>
-					<td>{{ item.quantity.reserved }}</td>
+					<td class="text-center">{{ item.quantity.total }}</td>
+					<td class="text-center">{{ item.quantity.reserved }}</td>
 					<td>
-						{{ if item.quantity.reserved < item.quantity.total }}
-							<button type="button" class="request" onclick="CartPopup({{ item.id }})">Request</button>
-						{{ /if }}
+						<div class="actions">
+							{{ if is_logged_in }}
+								<button type="button" class="action">Edit</button>
+							{{ /if }}
+							{{ if item.quantity.reserved < item.quantity.total }}
+								<button type="button" class="action" onclick="CartPopup({{ item.id }})">Request</button>
+							{{ /if }}
+						</div>
 					</td>
 				</tr>
 				{{ /for }}
 			</tbody>
 		</table>
 		<section id="cart">
+			<h3>Cart</h3>
+			<ul id="cart_items">
+				<li>1x Arduino Uno R3</li>
+				<li>8x Light Sensor</li>
+			</ul>
+			<button class="lock">Submit</button>
 		</section>
 		<dialog id="dialog_cart">
 			<h3>TEMPORARY</h3>
