@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/18 23:42:45 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/20 11:43:39 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -62,7 +62,9 @@
 					<td>{{ item.quantity.total }}</td>
 					<td>{{ item.quantity.reserved }}</td>
 					<td>
-						<button type="button" onclick="CartPopup({{ item.id }})">Request</button>
+						{{ if item.quantity.reserved < item.quantity.total }}
+							<button type="button" class="request" onclick="CartPopup({{ item.id }})">Request</button>
+						{{ /if }}
 					</td>
 				</tr>
 				{{ /for }}

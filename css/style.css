@@ -29,6 +29,40 @@ button.lock {
 	}
 }
 
+button.request {
+	all: unset;
+	width: fit-content;
+	height: fit-content;
+	position: relative;
+	cursor: pointer;
+	font-size: 1rem;
+	text-transform: uppercase;
+	font-weight: 900;
+	opacity: 0.6;
+	color: var(--foreground);
+	transition: opacity 100ms ease;
+	&::after {
+		content: '';
+		position: absolute;
+		display: inline-block;
+		width: 50%;
+		height: 2px;
+		bottom: -4px;
+		left: 0px;
+		opacity: 0.6;
+		background-color: black;
+		border-radius: 2px;
+		transition: width 100ms ease 50ms;
+	}
+	&:hover {
+		opacity: 1;
+		&::after {
+			width: 100%;
+			opacity: 1;
+		}
+	}
+}
+
 input {
 	color: var(--foreground);
 	background: var(--background);
