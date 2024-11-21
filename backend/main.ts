@@ -51,10 +51,10 @@ namespace Utils {
 		return new Response(page, { status, headers });
 	}
 
-	export function ResponseCSS(page: any): Response {
+	export function ResponseFile(file: any, content_type = "text/plain"): Response {
 		const headers = new Headers();
-		headers.set("Content-Type", "text/css");
-		return new Response(page, { status: 200, headers });
+		headers.set("Content-Type", content_type);
+		return (new Response(file, { status: 200, headers }));
 	}
 
 	export function SearchParamsToFields(params: URLSearchParams, predicates: Record<string, (_: string, __: string) => boolean> = {}): AppSearchParams {
@@ -192,13 +192,13 @@ namespace Pages {
 	export async function Stylesheet(req: Request, meta: RequestMetadata): Promise<Response> {
 		const filename = `${meta.patterns["0"]}.css`
 		const stylesheet = await Deno.readFile("../" + filename);
-		return (Utils.ResponseCSS(stylesheet));
+		return (Utils.ResponseFile(stylesheet, "text/css"));
 	}
 
 	export async function Script(req: Request, meta: RequestMetadata): Promise<Response> {
 		const filename = `${meta.patterns["0"]}.js`
 		const script = await Deno.readFile("../" + filename);
-		return (Utils.ResponseCSS(script));
+		return (Utils.ResponseFile(script, "text/javascript"));
 	}
 }
 
