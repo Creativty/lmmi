@@ -78,7 +78,7 @@ async function __cart_display(cart = []) {
 	for (const item of cart) {
 		const li = document.createElement("li");
 		const name = data.find(x => Number(x.id) === Number(item.id))?.name ?? "<unknown>";
-		li.innerText = `${item.amount}x ${item.name}`;
+		li.innerText = `${item.amount}x ${name}`;
 		list_elements.push(li);
 	}
 	list.replaceChildren(...list_elements);
