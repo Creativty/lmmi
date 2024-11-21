@@ -49,6 +49,11 @@ function DialogCartOpen(id, qt_total, qt_reserved) {
 	dialog.showModal();
 }
 
+function DialogCartClose() {
+	const dialog = document.getElementById("dialog_cart");
+	dialog.close();
+}
+
 function __cart_load() {
 	return (JSON.parse(localStorage.getItem("cart") ?? "[]"));
 }
