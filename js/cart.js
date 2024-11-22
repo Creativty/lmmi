@@ -21,8 +21,8 @@ function CartRemove(id, amount) {
 }
 
 function DialogCartSubmit() {
-	const dialog = document.getElementById("dialog_cart");
-	const input = dialog.querySelector("input#dialog_cart_item_amount");
+	const dialog = document.getElementById("dialog_request_add");
+	const input = dialog.querySelector("input#dialog_request_add_amount");
 
 	const data = dialog.dataset;
 	const id = data["itemId"];
@@ -34,11 +34,11 @@ function DialogCartSubmit() {
 function DialogCartOpen(id, qt_total, qt_reserved) {
 	const amount_max = Number(qt_total) - Number(qt_reserved);
 
-	const dialog = document.getElementById("dialog_cart");
+	const dialog = document.getElementById("dialog_request_add");
 	const row = document.querySelector(`[data-item-id="${id}"]`);
 	// Name
-	const title = dialog.querySelector("u#dialog_cart_item_title");
-	const input = dialog.querySelector("input#dialog_cart_item_amount");
+	const title = dialog.querySelector("u#dialog_request_add_title");
+	const input = dialog.querySelector("input#dialog_request_add_amount");
 
 	const name = row.getAttribute("data-item-name");
 	dialog.setAttribute("data-item-id", id);
