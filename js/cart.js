@@ -91,11 +91,11 @@ async function __cart_display(cart = []) {
 
 document.addEventListener("cart_add", function (event) {
 	const cart = __cart_load();
-	const { id, amount, name = "<unknown>" } = event.detail;
+	const { id, amount } = event.detail;
 	const index = cart.findIndex(x => x.id === id);
 	// TODO(XENOBAS): BUG(Adding items one-by-one overflows the available quantity.)
 	if (index === -1)
-		cart.push({ id, amount, name });
+		cart.push({ id, amount });
 	else
 		cart[index].amount += amount;
 	__cart_upload(cart);
