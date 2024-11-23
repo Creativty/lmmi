@@ -1,23 +1,12 @@
-import { Database } from 'jsr:@db/sqlite'
 import vento from "https://deno.land/x/vento@v0.9.1/mod.ts";
+import { Database } from 'jsr:@db/sqlite'
 import { type Environment } from "https://deno.land/x/vento@v0.9.1/src/environment.ts";
 import Data from './data.ts';
 import Utils from './utils.ts';
 
 const PORT: number | string = 8080;
 
-interface RequestMetadata {
-	db: Database,
-	tmpl: Environment,
-	patterns: Record<string, string | undefined>,
-}
-
-interface AppSearchParams {
-	data: Record<string, string | undefined>,
-	invalid: Record<string, string | undefined>,
-}
-
-function Server(): ((_: Request) => Promise<Response>) {
+export function Server(): ((_: Request) => Promise<Response>) {
 	const db = new Database(Data.sqlite_file);
 	const tmpl: Environment = vento();
 	async function HandleMatcher(req: Request): Promise<Response> {
@@ -39,7 +28,11 @@ function Server(): ((_: Request) => Promise<Response>) {
 	return HandleMatcher;
 }
 
-if (import.meta.main) {
+export function Main(): void {
 	const serve_entry = Server();
-	Deno.serve({ port: PORT }, serve_entry);
+	Deno.serve({ port: Number(PORT) }, serve_entry);
+}
+
+if (import.meta.main) {
+	Main();
 }

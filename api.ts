@@ -1,4 +1,5 @@
 import Utils from './utils.ts';
+import { RequestMetadata } from './types.ts'
 import { setCookie, type Cookie } from 'jsr:@std/http/cookie'
 
 export namespace Users {
