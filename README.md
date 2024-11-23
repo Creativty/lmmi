@@ -2,7 +2,6 @@
 LEETMAKERS (1337 Ben guerir's very own robotics club)'s inventory management interface.
 
 # TODO
-- Move static files to be under the server not the way it is currently.
 - Implement POST::/api/request endpoint for project request submission (with server side request data validation)
 
 # Future Features
