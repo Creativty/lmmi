@@ -68,17 +68,52 @@ input {
 	background: var(--background);
 }
 
-dialog#dialog_cart[open] {
-	gap: 1rem;
+dialog[open] {
 	padding: 2rem;
 	min-width: 33vw;
 	color: var(--foreground);
 	background-color: var(--background);
 	margin: auto;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	button.cart_action {
+	.dialog_title {
+		margin-bottom: 1rem;
+	}
+	&#dialog_request_add, &#dialog_session_obtain {
+		gap: 1rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+	&#dialog_request_submit {
+		gap: 1rem;
+		width: 50vw;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		.dialog_title {
+			grid-column: 1 / span 2;
+		}
+		ul {
+			max-height: 33vh;
+			overflow-y: auto;
+			padding-top: 1rem;
+			padding-left: 1rem;
+		}
+		div.field {
+			gap: 0.25rem;
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0.75rem;
+			& label {
+				font-
+			}
+		}
+		button[type=submit] {
+			float: right;
+		}
+	}
+}
+
+dialog#dialog_request_add[open] {
+	div.request_add_actions > button {
 		float: right;
 		&:not(:last-child) {
 			margin-left: 1rem;
@@ -93,15 +128,6 @@ dialog#dialog_cart[open] {
 }
 
 dialog#dialog_session_obtain[open] {
-	gap: 1rem;
-	padding: 2rem;
-	min-width: 33vw;
-	display: flex;
-	margin: auto;
-	flex-direction: column;
-	justify-content: center;
-	color: var(--foreground);
-	background: var(--background);
 	& button {
 		margin-top: 1rem;
 		align-self: flex-end;

@@ -32,6 +32,32 @@ h4, h5, h6 {
 	font-weight: bold;
 }
 
+ul {
+	list-style: none;
+}
+
+hr {
+	margin: 0.5rem 0;
+}
+
+input, textarea {
+	all: unset;
+
+	font-size: 1rem;
+	padding: 0.5rem 1rem;
+	padding-right: 0.25rem;
+	&:is(input) {
+		border-bottom: 4px solid var(--foreground);
+	}
+	&:is(textarea) {
+		border-left: 4px solid var(--foreground);
+	}
+	opacity: 0.5;
+	&:focus-within, &:focus-visible {
+		opacity: 1;
+	}
+}
+
 *.space-x {
 	margin: 0 auto;
 }

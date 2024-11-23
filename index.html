@@ -6,7 +6,7 @@
 <!-- By: abderrahim <marvin@42.fr>                  +#+  +:+       +#+       -->
 <!--                                              +#+#+#+#+#+   +#+          -->
 <!-- Created: 2024/11/16 16:02:47 by abderrahim        #+#    #+#            -->
-<!-- Updated: 2024/11/21 00:10:16 by abderrahim       ###   ########.fr      -->
+<!-- Updated: 2024/11/23 00:43:22 by abderrahim       ###   ########.fr      -->
 <!--                                                                         -->
 <!-- *********************************************************************** -->
 
@@ -86,15 +86,68 @@
 			</ul>
 			<button class="lock">Submit</button>
 		</section>
-		<dialog id="dialog_cart">
-			<h3><small>Requesting how many of</small> <u id="dialog_cart_item_title"></u>'s <small>?</small></h3>
-			<input  id="dialog_cart_item_amount" type="number" min="1" value="1">
-			<div class="cart_actions">
-				<button onclick="DialogCartSubmit()" class="lock cart_action">Submit</button>
-				<button onclick="DialogCartClose()" class="lock cart_action">Cancel</button>
+		<dialog id="dialog_request_add">
+			<h2 class="dialog_title"><small>Requesting how many of</small> <u id="dialog_request_add_title"></u>'s <small>?</small></h2>
+			<input  id="dialog_request_add_amount" type="number" min="1" value="1">
+			<div class="request_add_actions">
+				<button onclick="DialogCartSubmit()" class="lock">Submit</button>
+				<button onclick="DialogCartClose()" class="lock">Cancel</button>
 			</div>
 		</dialog>
+		<dialog id="dialog_request_submit">
+			<form action="/api/request" method="POST" class="contents">
+				<h2 class="dialog_title">REQUEST SUBMISSION</h2>
+				<section>
+					<h3>Contents</h3>
+					<ul>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+						<li>2x Arduino UNO R3</li>
+					<hr />
+						<li>2 Items in total</li>
+					</ul>
+				</section>
+				<section>
+					<div class="field">
+						<label for="name">Name</label>
+						<input type="text" id="name" name="name" placeholder="Super duper awesome project" autofocus>
+					</div>
+					<div class="field">
+						<label for="members">Members (comma separated)</label>
+						<input type="text" id="members" name="members" placeholder="John Doe, Jane Doe">
+					</div>
+					<div class="field">
+						<label for="description">Description</label>
+						<textarea id="description" name="description" cols="24" rows="5" placeholder="Solving the problem x, by utilizing y, and employing z."></textarea>
+					</div>
+					<button type="submit" class="lock">SUBMIT</button>
+				</section>
+			</form>
+		</dialog>
 		<dialog id="dialog_session_obtain">
+			<h2 class="dialog_title">SIGN IN</h2>
 			<form method="POST" action="/api/session/obtain" class="contents">
 				<label for="secret">Secret:</label>
 				<input type="password" id="secret" name="secret" placeholder="Type in inventory manager secret..." required />

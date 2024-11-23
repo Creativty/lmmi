@@ -21,8 +21,8 @@ function CartRemove(id, amount) {
 }
 
 function DialogCartSubmit() {
-	const dialog = document.getElementById("dialog_cart");
-	const input = dialog.querySelector("input#dialog_cart_item_amount");
+	const dialog = document.getElementById("dialog_request_add");
+	const input = dialog.querySelector("input#dialog_request_add_amount");
 
 	const data = dialog.dataset;
 	const id = data["itemId"];
@@ -34,11 +34,11 @@ function DialogCartSubmit() {
 function DialogCartOpen(id, qt_total, qt_reserved) {
 	const amount_max = Number(qt_total) - Number(qt_reserved);
 
-	const dialog = document.getElementById("dialog_cart");
+	const dialog = document.getElementById("dialog_request_add");
 	const row = document.querySelector(`[data-item-id="${id}"]`);
 	// Name
-	const title = dialog.querySelector("u#dialog_cart_item_title");
-	const input = dialog.querySelector("input#dialog_cart_item_amount");
+	const title = dialog.querySelector("u#dialog_request_add_title");
+	const input = dialog.querySelector("input#dialog_request_add_amount");
 
 	const name = row.getAttribute("data-item-name");
 	dialog.setAttribute("data-item-id", id);
@@ -96,11 +96,11 @@ async function __cart_display(cart = []) {
 
 document.addEventListener("cart_add", function (event) {
 	const cart = __cart_load();
-	const { id, amount, name = "<unknown>" } = event.detail;
+	const { id, amount } = event.detail;
 	const index = cart.findIndex(x => x.id === id);
 	// TODO(XENOBAS): BUG(Adding items one-by-one overflows the available quantity.)
 	if (index === -1)
-		cart.push({ id, amount, name });
+		cart.push({ id, amount });
 	else
 		cart[index].amount += amount;
 	__cart_upload(cart);
