@@ -99,20 +99,20 @@ export namespace Pages {
 		].map((x, i) => ({ ...x, id: i + 1 }));
 
 		const state = Utils.StateFactory(req, meta);
-		const page_template = await meta.tmpl.load("../index.html");
+		const page_template = await meta.tmpl.load("static/index.html");
 		const page = await page_template({ ...state, table });
 		return (Utils.ResponseHTML(page.content));
 	}
 
 	export async function Stylesheet(req: Request, meta: RequestMetadata): Promise<Response> {
 		const filename = `${meta.patterns["0"]}.css`
-		const stylesheet = await Deno.readFile("../" + filename);
+		const stylesheet = await Deno.readFile("static/" + filename);
 		return (Utils.ResponseFile(stylesheet, "text/css"));
 	}
 
 	export async function Script(req: Request, meta: RequestMetadata): Promise<Response> {
 		const filename = `${meta.patterns["0"]}.js`
-		const script = await Deno.readFile("../" + filename);
+		const script = await Deno.readFile("static/" + filename);
 		return (Utils.ResponseFile(script, "text/javascript"));
 	}
 }
